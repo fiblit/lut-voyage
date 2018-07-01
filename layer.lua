@@ -1,14 +1,19 @@
 local C = require("lib.class")
 
 Layer = class()
-function Layer:_new(img, transform, anchor)
+function Layer:_new(img, transform, anchor, color)
     self.img = img
     self.transform = transform
     self.anchor = anchor
+    set.color = color
 
     -- default to identity
     if not self.transform then
         self.transform = love.math.newTransform(0, 0)
+    end
+
+    if not self.color then
+        self.color = {r=1,g=1,b=1,a=1}
     end
 
     -- default to center anchor
@@ -19,6 +24,7 @@ function Layer:_new(img, transform, anchor)
 end
 
 function Layer:draw()
+    love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.a)
     love.graphics.draw(self.img, self.transform * self.anchor)
 end
 
