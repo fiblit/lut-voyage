@@ -1,7 +1,8 @@
-local C = require("lib.class")
+local libclass = require("lib.class")
+local transform = require("transform")
 
 Layer = class()
-function Layer:_new(img, transform, anchor, color)
+function Layer:_new(img, transform, color, anchor)
     self.img = img
     self.transform = transform
     self.anchor = anchor
@@ -9,23 +10,25 @@ function Layer:_new(img, transform, anchor, color)
 
     -- default to identity
     if not self.transform then
-        self.transform = love.math.newTransform(0, 0)
+        --self.transform = love.math.newTransform(0, 0)
+        self.transform = Transform(0, 0)
     end
 
     if not self.color then
-        self.color = {r=1,g=1,b=1,a=1}
+        self.color = {1, 1, 1, 1}
     end
 
     -- default to center anchor
     if not self.anchor then
-        self.anchor = love.math.newTransform(0, 0)
+        --self.anchor = love.math.newTransform(0, 0)
+        self.anchor = Transform(0, 0)
         self:reanchor('center')
     end
 end
 
 function Layer:draw()
-    love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.a)
-    love.graphics.draw(self.img, self.transform * self.anchor)
+    love.graphics.setColor(self.color)
+    love.graphics.draw(self.img, self.transform:asmat() * self.anchor:asmat())
 end
 
 function Layer:reanchor(point, offset)
@@ -52,11 +55,16 @@ function Layer:reanchor(point, offset)
     if not offset then
         offset = {x=0,y=0}
     end
-    x, y = ox + offset.x, oy + offset.y
-    self.anchor:setTransformation(0, 0, 0, 1, 1, x, y)
+    self.anchor.ox = ox + offset.x
+    self.anchor.oy = oy + offset.y
 end
 
 function Layer:shift(offset)
-    self.anchor:apply(love.math.newTransform(offset.x, offset.y))
+    self.anchor.ox = self.anchor.ox + offset.x
+    self.anchor.oy = self.anchor.oy + offset.y
+end
+
+function Layer:rotate(r)
+    self.transform.r = self.transform.r + r
 end
 
