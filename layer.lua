@@ -1,9 +1,16 @@
 local libclass = require("lib.class")
 local transform = require("transform")
+local anim = require("anim") -- to handle draw/construction
 
 Layer = class()
 function Layer:_new(img, transform, color, anchor)
-    self.img = img
+    if type(img) == 'table' and img.is[Anim] then
+        self.img = img:frame()
+        print(self.img)
+        self.anim = img
+    else
+        self.img = img
+    end
     self.transform = transform
     self.anchor = anchor
     set.color = color
@@ -23,6 +30,12 @@ function Layer:_new(img, transform, color, anchor)
         --self.anchor = love.math.newTransform(0, 0)
         self.anchor = Transform(0, 0)
         self:reanchor('center')
+    end
+end
+
+function Layer:update(dt)
+    if self.anim and self.anim:update(dt) then
+        self.img = self.anim:frame()
     end
 end
 
