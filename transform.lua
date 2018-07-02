@@ -22,6 +22,7 @@ function Transform:clone()
 end
 
 function Transform:asmat()
+    -- for the record; information is lost. r~kx+ky and ox~x oy~y
     return love.math.newTransform(
         self.x, self.y, self.r, self.sx, self.sy,
         self.ox, self.oy,
@@ -31,6 +32,7 @@ end
 
 function Transform:frommat(mat)
     -- will intentionally crash as unindexable; love transforms don't do that :/
+    -- only x, y, and r will be retrieved
     return mat.crash
 end
 

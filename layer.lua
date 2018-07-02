@@ -6,7 +6,6 @@ Layer = class()
 function Layer:_new(img, transform, color, anchor)
     if type(img) == 'table' and img.is[Anim] then
         self.img = img:frame()
-        print(self.img)
         self.anim = img
     else
         self.img = img
